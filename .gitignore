@@ -1,0 +1,40 @@
+@"
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Visual Studio
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# ASP.NET Core / .NET
+**/bin/
+**/obj/
+**/TestResults/
+
+# Node / React
+**/node_modules/
+**/dist/
+**/build/
+**/.vite/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+
+# Power BI local/cache files
+*.pbi
+"@ | Set-Content -Encoding UTF8 .gitignore

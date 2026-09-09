@@ -1,0 +1,58 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: isp-smart-ticketing-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-isp_ticketing}
+      MYSQL_USER: ${MYSQL_USER:-isp_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change_me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_root_me}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    container_name: isp-smart-ticketing-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=${MYSQL_DATABASE:-isp_ticketing};User=${MYSQL_USER:-isp_user};Password=${MYSQL_PASSWORD:-change_me};
+      JwtSettings__Issuer: ISP.Ticketing
+      JwtSettings__Audience: ISP.Ticketing.Client
+      JwtSettings__SecretKey: ${JWT_SECRET:-change_this_to_a_long_random_secret_32_chars_min}
+      JwtSettings__ExpiryMinutes: 120
+      PowerBI__TenantId: ${POWERBI_TENANT_ID:-CHANGE_ME}
+      PowerBI__ClientId: ${POWERBI_CLIENT_ID:-CHANGE_ME}
+      PowerBI__ClientSecret: ${POWERBI_CLIENT_SECRET:-CHANGE_ME}
+      PowerBI__WorkspaceId: ${POWERBI_WORKSPACE_ID:-CHANGE_ME}
+      PowerBI__ReportId: ${POWERBI_REPORT_ID:-CHANGE_ME}
+      PowerBI__DatasetId: ${POWERBI_DATASET_ID:-}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ticket_uploads:/app/uploads
+
+  frontend:
+    build: ./frontend
+    container_name: isp-smart-ticketing-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+volumes:
+  ticket_uploads:
+  mysql_data:

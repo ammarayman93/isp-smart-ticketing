@@ -1,0 +1,15 @@
+Power BI implementation files:
+backend/ISP.Ticketing.Application/Common/Interfaces/IPowerBiService.cs
+backend/ISP.Ticketing.Application/Common/Models/PowerBiEmbedConfig.cs
+backend/ISP.Ticketing.Infrastructure/Services/PowerBiService.cs
+backend/ISP.Ticketing.API/Controllers/PowerBiController.cs
+backend/ISP.Ticketing.Infrastructure/DependencyInjection.cs
+backend/ISP.Ticketing.API/appsettings.json
+frontend/src/pages/PowerBIPage.tsx
+frontend/src/App.tsx
+frontend/src/index.css
+docker-compose.yml
+.env.example
+database/powerbi/01_powerbi_views.sql
+database/powerbi/02_powerbi_dax.md
+POWERBI_SETUP.md
